@@ -14,13 +14,25 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 
 public class DataRepository {
+    private static DataRepository INSTANCE;
     private CountryDao countryDao;
     private CityDao cityDao;
 
-    public DataRepository(Application application) {
+    private DataRepository(Application application) {
         CityDatabase db = CityDatabase.getInstance(application);
         this.countryDao = db.countryDao();
         this.cityDao = db.cityDao();
+    }
+
+    public static DataRepository getInstance(Application application) {
+        if (INSTANCE == null) {
+            synchronized (DataRepository.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new DataRepository(application);
+                }
+            }
+        }
+        return INSTANCE;
     }
 
     public LiveData<List<Country>> getAllCountry() {
