@@ -1,7 +1,10 @@
-package com.example.vlad.cityinfo;
+package com.example.vlad.cityinfo.ui;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.vlad.cityinfo.R;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class CityListActivity extends AppCompatActivity {
 
