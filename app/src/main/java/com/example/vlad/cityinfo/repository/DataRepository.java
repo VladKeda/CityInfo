@@ -35,7 +35,7 @@ public class DataRepository {
         return INSTANCE;
     }
 
-    public LiveData<List<Country>> getAllCountry() {
+    public LiveData<List<Country>> getAllCountries() {
         return countryDao.getAll();
     }
 
