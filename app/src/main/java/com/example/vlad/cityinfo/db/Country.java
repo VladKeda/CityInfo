@@ -10,6 +10,12 @@ public class Country {
 
     private String title;
 
+    public Country() {}
+
+    public Country(String title) {
+        this.title = title;
+    }
+
     public long getId() {
         return id;
     }

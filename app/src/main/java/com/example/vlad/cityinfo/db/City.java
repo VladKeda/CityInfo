@@ -16,6 +16,13 @@ public class City {
     @ColumnInfo(name = "country_id")
     private long countryId;
 
+    public City() {}
+
+    public City(String title, long countryId) {
+        this.title = title;
+        this.countryId = countryId;
+    }
+
     public long getId() {
         return id;
     }
