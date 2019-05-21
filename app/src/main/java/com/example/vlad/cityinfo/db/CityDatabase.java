@@ -9,20 +9,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-@Database(entities = {Country.class, City.class}, version = 1)
+@Database(entities = {Country.class, City.class}, version = 2)
 public abstract class CityDatabase extends RoomDatabase {
+    private static final String DATABASE_NAME = "city_database.db";
     private static volatile  CityDatabase INSTANCE;
     private static RoomDatabase.Callback callback = new RoomDatabase.Callback() {
         @Override
@@ -31,14 +37,22 @@ public abstract class CityDatabase extends RoomDatabase {
             new PopulateDbAsync(INSTANCE).execute();
         }
     };
+    private static final Migration MIGRATION_1_2 = new Migration(1,2) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+        }
+    };
 
     public static CityDatabase getInstance(final Context context) {
         if (INSTANCE == null) {
             synchronized (CityDatabase.class) {
                 if (INSTANCE == null) {
+                    copyAttachedDatabase(context);
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            CityDatabase.class, "city_database")
-                            .addCallback(callback)
+                            CityDatabase.class, DATABASE_NAME)
+                            .addMigrations(MIGRATION_1_2)
+//                            .addCallback(callback)
                             .build();
                 }
             }
@@ -47,6 +61,33 @@ public abstract class CityDatabase extends RoomDatabase {
     }
     public abstract CountryDao countryDao();
     public abstract CityDao cityDao();
+
+    private static void copyAttachedDatabase(final Context context) {
+        final File dbPath = context.getDatabasePath(DATABASE_NAME);
+        if (dbPath.exists()) {
+            return;
+        }
+        dbPath.getParentFile().mkdirs();
+
+        try {
+            final InputStream inputStream = context.getAssets().open("database/" + DATABASE_NAME);
+            final OutputStream outputStream = new FileOutputStream(dbPath);
+
+            byte[] buffer = new byte[8192];
+            int length;
+
+            while ((length = inputStream.read(buffer, 0, buffer.length)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static class PopulateDbAsync extends AsyncTask<Void,Void,Void> {
         private final CountryDao countryDao;
@@ -84,17 +125,6 @@ public abstract class CityDatabase extends RoomDatabase {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-//            for (int i = 0; i < 5; i++) {
-//                Country country = new Country();
-//                country.setTitle("country #" + (i+1));
-//                long countryId = countryDao.insert(country);
-//                for (int j = 0; j < 15; j++) {
-//                    City city = new City();
-//                    city.setTitle("city #" + (j+1) + "from country #" + (i+1));
-//                    city.setCountryId(countryId);
-//                    cityDao.insert(city);
-//                }
-//            }
             return null;
         }
     }
