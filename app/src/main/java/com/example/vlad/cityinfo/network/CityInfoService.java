@@ -6,7 +6,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CityInfoService {
     private static CityInfoService INSTANCE;
     private static final String BASE_URL = "http://api.geonames.org";
-    private static final String USERNAME = "vladkeda";
     private Retrofit retrofit;
 
     private CityInfoService() {

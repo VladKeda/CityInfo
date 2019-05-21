@@ -5,13 +5,13 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CityListActivity">
+    tools:context=".ui.CityInfoListActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/city_recyclerview"
+        android:id="@+id/city_info_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/recyclerview_city_item">
+        tools:listitem="@layout/recyclerview_city_info_item">
 
     </androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>

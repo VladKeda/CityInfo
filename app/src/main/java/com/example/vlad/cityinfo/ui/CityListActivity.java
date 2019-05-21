@@ -36,7 +36,6 @@ public class CityListActivity extends AppCompatActivity {
         recyclerView.setAdapter(cityListAdapter);
 
         cityViewModel = ViewModelProviders.of(this).get(CityViewModel.class);
-
         cityViewModel.getCitiesByFilter().observe(this, new Observer<List<City>>() {
             @Override
             public void onChanged(List<City> cities) {
@@ -60,7 +59,7 @@ public class CityListActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Country selectedCountry = (Country) spinner.getSelectedItem();
-                cityViewModel.setFilterCountryId(selectedCountry.getId());
+                cityViewModel.setFilterCountry(selectedCountry);
             }
 
             @Override
@@ -77,6 +76,12 @@ public class CityListActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+
+        Country selectedCountry = cityViewModel.getFilterCountry().getValue();
+        if (selectedCountry != null) {
+            int position = cityViewModel.getAllCountry().getValue().indexOf(selectedCountry);
+            spinner.setSelection(position);
+        }
         return true;
     }
 }

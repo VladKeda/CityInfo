@@ -18,19 +18,19 @@ public class CityViewModel extends AndroidViewModel {
     private DataRepository dataRepository;
     private LiveData<List<Country>> allCountries;
     private LiveData<List<City>> citiesByCountry;
-    private MutableLiveData<Long> filterCountryId;
+    private MutableLiveData<Country> filterCountry;
 
 
     public CityViewModel(Application application) {
         super(application);
         this.dataRepository = DataRepository.getInstance(application);
         this.allCountries = dataRepository.getAllCountries();
-        this.filterCountryId = new MutableLiveData<>();
-        this.citiesByCountry = Transformations.switchMap(filterCountryId,
-                new Function<Long, LiveData<List<City>>>() {
+        this.filterCountry = new MutableLiveData<>();
+        this.citiesByCountry = Transformations.switchMap(filterCountry,
+                new Function<Country, LiveData<List<City>>>() {
                     @Override
-                    public LiveData<List<City>> apply(Long countryId) {
-                        return dataRepository.getCitiesByCountry(countryId);
+                    public LiveData<List<City>> apply(Country country) {
+                        return dataRepository.getCitiesByCountry(country.getId());
                     }
                 });
     }
@@ -39,12 +39,12 @@ public class CityViewModel extends AndroidViewModel {
         return this.allCountries;
     }
 
-    public void insertCountry(Country country) {
-        this.dataRepository.insertCountry(country);
+    public void setFilterCountry(Country country) {
+        this.filterCountry.setValue(country);
     }
 
-    public void setFilterCountryId(long countryId) {
-        this.filterCountryId.setValue(countryId);
+    public LiveData<Country> getFilterCountry() {
+        return filterCountry;
     }
 
     public LiveData<List<City>> getCitiesByFilter() {

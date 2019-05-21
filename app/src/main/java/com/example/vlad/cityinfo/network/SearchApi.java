@@ -6,5 +6,5 @@ import retrofit2.http.Query;
 
 public interface SearchApi {
     @GET("/wikipediaSearchJSON")
-    Call<CityInfo> info(@Query("q") String cityTitle, @Query("maxRows") int maxCount, @Query("username") String userName);
+    Call<SearchResponse> search(@Query("q") String cityTitle, @Query("maxRows") int maxCount, @Query("username") String userName);
 }
