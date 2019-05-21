@@ -77,11 +77,13 @@ public class CityListActivity extends AppCompatActivity {
             }
         });
 
-        Country selectedCountry = cityViewModel.getFilterCountry().getValue();
-        if (selectedCountry != null) {
-            int position = cityViewModel.getAllCountry().getValue().indexOf(selectedCountry);
-            spinner.setSelection(position);
-        }
+        cityViewModel.getFilterCountry().observe(this, new Observer<Country>() {
+            @Override
+            public void onChanged(Country country) {
+                int position = cityViewModel.getAllCountry().getValue().indexOf(country);
+                spinner.setSelection(position);
+            }
+        });
         return true;
     }
 }
