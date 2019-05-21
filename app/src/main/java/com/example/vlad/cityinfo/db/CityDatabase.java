@@ -48,6 +48,11 @@ public abstract class CityDatabase extends RoomDatabase {
         if (INSTANCE == null) {
             synchronized (CityDatabase.class) {
                 if (INSTANCE == null) {
+                    /*
+                    * 1) copyAttachedDatabase(...) - copy db from assets into data folder
+                    *       addMigration(...) - is needed
+                    * 2) addCallback(...) - populate db after creation
+                    *       addMigration(...) - is not needed*/
                     copyAttachedDatabase(context);
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             CityDatabase.class, DATABASE_NAME)
