@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.vlad.cityinfo.R;
 import com.example.vlad.cityinfo.network.CityInfo;
@@ -21,6 +23,7 @@ public class CityInfoListActivity extends AppCompatActivity {
     private static final String EXTRA_SEARCH = "com.example.vlad.cityinfo.ui.search";
     private CityInfoViewModel infoViewModel;
     private RecyclerView recyclerView;
+    private ProgressBar progressBar;
 
     public static Intent newIntent(Context context, String searchTitle) {
         Intent intent = new Intent(context, CityInfoListActivity.class);
@@ -33,10 +36,13 @@ public class CityInfoListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_info_list);
 
+        progressBar = findViewById(R.id.city_info_progress_bar);
+
         recyclerView = findViewById(R.id.city_info_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         final CityInfoListAdapter adapter = new CityInfoListAdapter(this);
         recyclerView.setAdapter(adapter);
+        recyclerView.setVisibility(View.GONE);
 
         infoViewModel = ViewModelProviders.of(this).get(CityInfoViewModel.class);
         String searchTitle = infoViewModel.getSearchTitle().getValue();
@@ -48,6 +54,8 @@ public class CityInfoListActivity extends AppCompatActivity {
         infoViewModel.getCityInfo().observe(this, new Observer<List<CityInfo>>() {
             @Override
             public void onChanged(List<CityInfo> cityInfos) {
+                progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
                 adapter.setCityInfos(cityInfos);
             }
         });
